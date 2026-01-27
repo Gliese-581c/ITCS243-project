@@ -2,7 +2,7 @@
 ## Project repo for Patrick, Kris, Greg, Vadym
 Current (not finalized) project idea is a "poker simulator", programmed in Java. Outputs two hands, one visible to the user, the other hidden. User guesses whether visible hand is higher or lower than hidden one.
 
-##Greg:
+# Greg:
   Shuffle
   Compare hands
   Store cards as objects to make shuffling consistent
@@ -16,9 +16,10 @@ Current (not finalized) project idea is a "poker simulator", programmed in Java.
   A "welcome" message explaining the game and how to play.
 
 # Patrick
-  Taking user inputs
-  Set aside used hands
-  
+  ## Taking user inputs
+  Prompt the user for interactions, either to reset the game board, or discard and draw new cards, etc.
+  ## Set aside used hands
+  Don't want each hand to be drawn from a full 52 card deck. Each hand should be be drawn from the remaining, unused, deck. Deck should only reset either when it runs out of cards, or when the user tells the program to reset.
 
 # Vadym
   Package research
