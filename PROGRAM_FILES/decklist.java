@@ -10,19 +10,30 @@ class Card {
 
 public class decklist {
     public static void main(String[] args) {
-        deckParts();
+        ArrayList<Card> shuffler =arrayBuilder();
+        shuffler = cardBuilder(shuffler);
+        Stack<Card> deck = new Stack<Card>();
+        deck = deckbuilder(shuffler, deck);
+        
+         // Print statement I used for testing
+         while (!deck.isEmpty()) {
+         Card card = deck.pop();
+         System.out.println(card.rank + " of " + card.suit);
+         }
+        
     }
 
-    public static void deckParts() {
-
-        // initializes the deckbuilding materials
+    public static ArrayList<Card> arrayBuilder() {
+        // initializes the deckbuilding arraylist
         ArrayList<Card> shuffler = new ArrayList<Card>();
-        Stack<Card> deck = new Stack<Card>();
+        return shuffler;
+    }
+
+    public static ArrayList<Card> cardBuilder(ArrayList<Card> shuffler) {
+        // builds 52 new card objects and adds them to the arraylist
         String[] suits = { "Hearts", "Spades", "Diamonds", "Clubs" };
         String[] ranks = { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen",
                 "King " };
-
-        // builds 52 new card objects and adds each to the shuffler
         for (int i = 0; i < suits.length; i++) {
             for (int j = 0; j < ranks.length; j++) {
                 Card card = new Card();
@@ -31,13 +42,20 @@ public class decklist {
                 shuffler.add(card);
             }
         }
-        
-            //calls the deckbuilder method
-        deckbuilder(shuffler, deck);
-
+        return shuffler;
     }
 
-    public static void deckbuilder(ArrayList<Card> shuffler, Stack<Card> deck) {
+    //converts a stack back into an arraylist, to be passed back into the deckbuilder
+    public static ArrayList<Card> deckrebuilder(Stack<Card> deck) {
+        ArrayList<Card> shuffler = new ArrayList<Card>();
+        while (!deck.isEmpty()) {
+            Card card = deck.pop();
+            shuffler.add(card);
+        }
+        return shuffler;
+    }
+
+    public static Stack<Card> deckbuilder(ArrayList<Card> shuffler, Stack<Card> deck) {
 
         Collections.shuffle(shuffler);
 
@@ -45,15 +63,7 @@ public class decklist {
         for (Card card : shuffler) {
             deck.push(card);
         }
-
-        /*
-         // Print statement I used for testing
-         while (!deck.isEmpty()) {
-         Card card = deck.pop();
-         System.out.println(card.rank + " of " + card.suit);
-         }
-         */
-
+        return deck;
     }
 }
 
