@@ -5,6 +5,10 @@ import java.util.Collections;
 
 public class decklist {
     public static void main(String[] args) {
+        deckbuilder();
+    }
+
+    public static void deckbuilder() {
 
         // initializes the deckbuilding materials
         ArrayList<Card> shuffler = new ArrayList<Card>();
@@ -23,7 +27,7 @@ public class decklist {
             }
         }
 
-        // Ttis method performs the shuffle itself
+        // This method performs the shuffle itself
         Collections.shuffle(shuffler);
 
         // adds cards into deck stack
@@ -31,13 +35,12 @@ public class decklist {
             deck.push(card);
         }
 
-        /*
-         * //Print statement I used for testing
-         * while (!deck.isEmpty()) {
-         * Card card = deck.pop();
-         * System.out.println(card.rank + " of " + card.suit);
-         * }
-         */
+        // Print statement I used for testing
+        while (!deck.isEmpty()) {
+            Card card = deck.pop();
+            System.out.println(card.rank + " of " + card.suit);
+        }
+
     }
 }
 
