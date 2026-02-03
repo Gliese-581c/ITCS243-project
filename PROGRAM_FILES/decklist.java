@@ -3,12 +3,17 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
+class Card {
+    String suit;
+    String rank;
+}
+
 public class decklist {
     public static void main(String[] args) {
-        deckbuilder();
+        deckParts();
     }
 
-    public static void deckbuilder() {
+    public static void deckParts() {
 
         // initializes the deckbuilding materials
         ArrayList<Card> shuffler = new ArrayList<Card>();
@@ -26,8 +31,14 @@ public class decklist {
                 shuffler.add(card);
             }
         }
+        
+            //calls the deckbuilder method
+        deckbuilder(shuffler, deck);
 
-        // This method performs the shuffle itself
+    }
+
+    public static void deckbuilder(ArrayList<Card> shuffler, Stack<Card> deck) {
+
         Collections.shuffle(shuffler);
 
         // adds cards into deck stack
@@ -35,16 +46,15 @@ public class decklist {
             deck.push(card);
         }
 
-        // Print statement I used for testing
-        while (!deck.isEmpty()) {
-            Card card = deck.pop();
-            System.out.println(card.rank + " of " + card.suit);
-        }
+        /*
+         // Print statement I used for testing
+         while (!deck.isEmpty()) {
+         Card card = deck.pop();
+         System.out.println(card.rank + " of " + card.suit);
+         }
+         */
 
     }
 }
 
-class Card {
-    String suit;
-    String rank;
-}
+
