@@ -25,5 +25,6 @@ public class App {
         KrisWork();
         PatrickWork();
         GregWork();
+        Decklist.main(args);
     }
 }
