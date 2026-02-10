@@ -3,6 +3,10 @@
  */
 package org.example;
 
+import java.util.Stack;
+
+import javax.smartcardio.Card;
+
 public class App {
     public static void VadymWork() {
         System.out.println("Vadym's work goes here");
@@ -10,6 +14,15 @@ public class App {
 
     public static void KrisWork() {
         System.out.println("Kris's work goes here");
+        //deals hands and shows player theirs
+        // Stack<Card> player = drawHand(deck);
+        // System.out.println("Your hand is: ");
+        // for (int i = 0; i <= 4; i++) {
+        //    Card card = player.get(i);
+        //    System.out.println(card.rank + " of " + card.suit);
+        // }
+         
+        //Stack<Card> house = drawHand(deck);
     }
 
     public static void PatrickWork() {
