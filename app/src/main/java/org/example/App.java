@@ -25,6 +25,16 @@ public class App {
         //Stack<Card> house = drawHand(deck);
     }
 
+    //deals cards from the deck
+    //public static Stack<Card> drawHand(Stack<Card> deck) {
+      //  Stack<Card> hand = new Stack<Card>();
+        //for( int i = 0; i <= 4; i++) {
+          //  Card card = deck.pop();
+            //hand.push(card);
+        //}
+        //return hand;
+    //}
+
     public static void PatrickWork() {
         System.out.println("Patrick's work goes here");
     }
