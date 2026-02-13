@@ -24,7 +24,7 @@ public class App {
 
     public static void PatrickWork() {
         System.out.println("Patrick's work goes here");
-        ArrayList<Card> shuffler = arrayBuilder();
+        ArrayList<Card> shuffler = new ArrayList<Card>();
         shuffler = cardBuilder(shuffler);
         Stack<Card> deck = new Stack<Card>();
         deck = deckbuilder(shuffler, deck);
@@ -34,12 +34,6 @@ public class App {
             Card card = deck.pop();
             System.out.println(card.rank + " of " + card.suit);
         }
-    }
-
-    public static ArrayList<Card> arrayBuilder() {
-        // initializes the deckbuilding arraylist
-        ArrayList<Card> shuffler = new ArrayList<Card>();
-        return shuffler;
     }
 
     public static ArrayList<Card> cardBuilder(ArrayList<Card> shuffler) {
