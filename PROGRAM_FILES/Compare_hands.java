@@ -10,7 +10,8 @@ public class Compare_hands {
 
     }
 
-    public void define_hands() {
+    public void define_hands(Hand hand1, Hand hand2) {
+        hand1.hand.sort();
         // royal flush
 
         // straight flush
@@ -34,8 +35,8 @@ public class Compare_hands {
 }
 
 class Card {
-    String suit;
     String rank;
+    String suit;
 }
 
 class Hand {
