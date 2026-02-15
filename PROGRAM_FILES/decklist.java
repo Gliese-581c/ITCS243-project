@@ -10,17 +10,37 @@ class Card {
 
 public class decklist {
     public static void main(String[] args) {
-        ArrayList<Card> shuffler =arrayBuilder();
+        ArrayList<Card> shuffler = arrayBuilder();
         shuffler = cardBuilder(shuffler);
         Stack<Card> deck = new Stack<Card>();
         deck = deckbuilder(shuffler, deck);
         
-         // Print statement I used for testing
-         while (!deck.isEmpty()) {
-         Card card = deck.pop();
-         System.out.println(card.rank + " of " + card.suit);
-         }
+        //deals hands and shows player theirs
+        Stack<Card> player = drawHand(deck);
+        System.out.println("Your hand is: ");
+        for (int i = 0; i <= 4; i++) {
+           Card card = player.get(i);
+           System.out.println(card.rank + " of " + card.suit);
+        }
+         
+        Stack<Card> house = drawHand(deck);
+         
+        //  // Print statement I used for testing
+//          while (!deck.isEmpty()) {
+//          Card card = deck.pop();
+//          System.out.println(card.rank + " of " + card.suit);
+//          }
         
+    }
+    
+    //deals cards from the deck
+    public static Stack<Card> drawHand(Stack<Card> deck) {
+        Stack<Card> hand = new Stack<Card>();
+        for( int i = 0; i <= 4; i++) {
+            Card card = deck.pop();
+            hand.push(card);
+        }
+        return hand;
     }
 
     public static ArrayList<Card> arrayBuilder() {
@@ -65,6 +85,8 @@ public class decklist {
         }
         return deck;
     }
+
+    
 }
 
 
