@@ -4,13 +4,23 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Stack;
 
 //defines a card
-class Card {
+class Card implements Comparable<Card> {
+    public int compareTo(Card other) {
+        return this.value - other.value;
+    }
+
+    public String toString() {
+        return rank + " of " + suit;
+    }
+
     String suit;
     String rank;
+    int value;
 }
 
 public class App {
@@ -29,11 +39,55 @@ public class App {
         Stack<Card> deck = new Stack<Card>();
         deck = deckbuilder(shuffler, deck);
 
-        // Print statement I used for testing
-        while (!deck.isEmpty()) {
-            Card card = deck.pop();
-            System.out.println(card.rank + " of " + card.suit);
+        // test hand
+        ArrayList<Card> hand1 = new ArrayList<Card>();
+        for (int i = 0; i < 5; i++) {
+            hand1.add(deck.pop());
         }
+
+        define_hands(hand1);
+        /*
+         * // Print statement I used for testing
+         * while (!deck.isEmpty()) {
+         * Card card = deck.pop();
+         * System.out.println(card.rank + " of " + card.suit);
+         * }
+         */
+    }
+
+    public static void define_hands(ArrayList<Card> hand1) {
+
+        // testing statements
+        for (Card card : hand1) {
+            System.out.print(card + ", ");
+        }
+        System.out.println();
+
+        Collections.sort(hand1);
+
+        for (Card card : hand1) {
+            System.out.print(card + ", ");
+        }
+
+        // royal flush
+
+        // straight flush
+
+        // four of a kind
+
+        // three of a kind
+
+        // full house
+
+        // flush
+
+        // straight
+
+        // two pair
+
+        // one pair
+
+        // high card
     }
 
     public static ArrayList<Card> cardBuilder(ArrayList<Card> shuffler) {
@@ -46,6 +100,7 @@ public class App {
                 Card card = new Card();
                 card.suit = suits[i];
                 card.rank = ranks[j];
+                card.value = j;
                 shuffler.add(card);
             }
         }
