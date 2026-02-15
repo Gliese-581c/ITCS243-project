@@ -4,13 +4,23 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Stack;
 
 //defines a card
-class Card {
+class Card implements Comparable<Card> {
+    public int compareTo(Card other) {
+        return other.value - this.value;
+    }
+
+    public String toString() {
+        return rank + " of " + suit;
+    }
+
     String suit;
     String rank;
+    int value;
 }
 
 public class App {
@@ -24,34 +34,188 @@ public class App {
 
     public static void PatrickWork() {
         System.out.println("Patrick's work goes here");
-        ArrayList<Card> shuffler = arrayBuilder();
+        ArrayList<Card> shuffler = new ArrayList<Card>();
         shuffler = cardBuilder(shuffler);
         Stack<Card> deck = new Stack<Card>();
         deck = deckbuilder(shuffler, deck);
 
-        // Print statement I used for testing
-        while (!deck.isEmpty()) {
-            Card card = deck.pop();
-            System.out.println(card.rank + " of " + card.suit);
+        // test hand
+        ArrayList<Card> hand1 = new ArrayList<Card>();
+        for (int i = 0; i < 5; i++) {
+            hand1.add(deck.pop());
+        }
+
+        define_hands(hand1);
+
+        if (royal_flush(hand1)) {
+            System.out.println("\n" + "royal flush");
+        } else if (straight_flush(hand1)) {
+            System.out.println("\n" + "straight flush");
+        } else if (four_of_a_kind(hand1)) {
+            System.out.println("\n" + "four of a kind");
+        } else if (full_house(hand1)) {
+            System.out.println("\n" + "full house");
+        } else if (flush(hand1)) {
+            System.out.println("\n" + "flush");
+        } else if (straight(hand1)) {
+            System.out.println("\n" + "straight");
+        } else if (three_of_a_kind(hand1)) {
+            System.out.println("\n" + "three of a kind");
+        } else if (two_pair(hand1)) {
+            System.out.println("\n" + "two pair");
+        } else if (one_pair(hand1)) {
+            System.out.println("\n" + "one pair");
+        } else {
+            System.out.println("\n" + "high card");
+        }
+
+        /*
+         * // Print statement I used for testing
+         * while (!deck.isEmpty()) {
+         * Card card = deck.pop();
+         * System.out.println(card.rank + " of " + card.suit);
+         * }
+         */
+    }
+
+    public static void define_hands(ArrayList<Card> hand1) {
+
+        // testing statements
+        System.out.print("Unsorted hand: ");
+        for (Card card : hand1) {
+            System.out.print(card + ", ");
+        }
+        Collections.sort(hand1);
+        System.out.print("\n" + "Sorted hand: ");
+        for (Card card : hand1) {
+            System.out.print(card + ", ");
         }
     }
 
-    public static ArrayList<Card> arrayBuilder() {
-        // initializes the deckbuilding arraylist
-        ArrayList<Card> shuffler = new ArrayList<Card>();
-        return shuffler;
+    // royal flush
+    public static boolean royal_flush(ArrayList<Card> hand1) {
+        if (hand1.get(0).value == 14 && hand1.get(1).value == 13
+                && hand1.get(2).value == 12 && hand1.get(3).value == 11
+                && hand1.get(4).value == 10) {
+            return true;
+        }
+        return false;
+    }
+
+    // straight flush
+    public static boolean straight_flush(ArrayList<Card> hand1) {
+        if (hand1.get(0).value == hand1.get(1).value - 1
+                && hand1.get(1).value == hand1.get(2).value - 1
+                && hand1.get(2).value == hand1.get(3).value - 1
+                && hand1.get(3).value == hand1.get(4).value - 1) {
+            if (hand1.get(0).suit == hand1.get(1).suit
+                    && hand1.get(1).suit == hand1.get(2).suit
+                    && hand1.get(2).suit == hand1.get(3).suit
+                    && hand1.get(3).suit == hand1.get(4).suit) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // four of a kind
+    public static boolean four_of_a_kind(ArrayList<Card> hand1) {
+        for (int i = 0; i < hand1.size() - 3; i++) {
+            if (hand1.get(i).value == hand1.get(i + 1).value
+                    && hand1.get(i).value == hand1.get(i + 2).value
+                    && hand1.get(i).value == hand1.get(i + 3).value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // full house
+    public static boolean full_house(ArrayList<Card> hand1) {
+        if (hand1.get(0).value == hand1.get(1).value
+                && hand1.get(0).value == hand1.get(2).value
+                && hand1.get(3).value == hand1.get(4).value) {
+            return true;
+        } else if (hand1.get(0).value == hand1.get(1).value
+                && hand1.get(2).value == hand1.get(3).value
+                && hand1.get(2).value == hand1.get(4).value) {
+            return true;
+        }
+        return false;
+    }
+
+    // flush
+    public static boolean flush(ArrayList<Card> hand1) {
+        if (hand1.get(0).suit == hand1.get(1).suit
+                && hand1.get(1).suit == hand1.get(2).suit
+                && hand1.get(2).suit == hand1.get(3).suit
+                && hand1.get(3).suit == hand1.get(4).suit) {
+            return true;
+        }
+        return false;
+    }
+
+    // straight
+    public static boolean straight(ArrayList<Card> hand1) {
+        if (hand1.get(0).value == hand1.get(1).value - 1
+                && hand1.get(1).value == hand1.get(2).value - 1
+                && hand1.get(2).value == hand1.get(3).value - 1
+                && hand1.get(3).value == hand1.get(4).value - 1) {
+            return true;
+        }
+        return false;
+    }
+
+    // three of a kind
+    public static boolean three_of_a_kind(ArrayList<Card> hand1) {
+        for (int i = 0; i < hand1.size() - 2; i++) {
+            if (hand1.get(i).value == hand1.get(i + 1).value
+                    && hand1.get(i).value == hand1.get(i + 2).value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // two pair
+    public static boolean two_pair(ArrayList<Card> hand1) {
+        if (hand1.get(0).value == hand1.get(1).value
+                && hand1.get(2).value == hand1.get(3).value
+                || hand1.get(0).value == hand1.get(1).value
+                        && hand1.get(3).value == hand1.get(4).value
+                || hand1.get(1).value == hand1.get(2).value
+                        && hand1.get(3).value == hand1.get(4).value) {
+            return true;
+        }
+        return false;
+    }
+
+    // one pair
+    public static boolean one_pair(ArrayList<Card> hand1) {
+        for (int i = 0; i < hand1.size() - 1; i++) {
+            if (hand1.get(i).value == hand1.get(i + 1).value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // high card
+    public static boolean high_card(ArrayList<Card> hand1) {
+        return true;
     }
 
     public static ArrayList<Card> cardBuilder(ArrayList<Card> shuffler) {
         // builds 52 new card objects and adds them to the arraylist
         String[] suits = { "Hearts", "Spades", "Diamonds", "Clubs" };
         String[] ranks = { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen",
-                "King " };
+                "King" };
         for (int i = 0; i < suits.length; i++) {
             for (int j = 0; j < ranks.length; j++) {
                 Card card = new Card();
                 card.suit = suits[i];
                 card.rank = ranks[j];
+                card.value = j;
                 shuffler.add(card);
             }
         }
