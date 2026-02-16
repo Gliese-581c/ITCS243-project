@@ -25,11 +25,11 @@ public class decklist {
          
         Stack<Card> house = drawHand(deck);
          
-        //  // Print statement I used for testing
-//          while (!deck.isEmpty()) {
-//          Card card = deck.pop();
-//          System.out.println(card.rank + " of " + card.suit);
-//          }
+        // Print statement I used for testing
+        //   while (!deck.isEmpty()) {
+        //   Card card = deck.pop();
+        //  System.out.println(card.rank + " of " + card.suit);
+        //   }
         
     }
     
