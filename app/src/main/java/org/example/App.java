@@ -6,6 +6,28 @@ package org.example;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
+import java.io.File;
+import java.io.IOException;
+
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.DefaultWindowManager;
+import com.googlecode.lanterna.gui2.EmptySpace;
+import com.googlecode.lanterna.gui2.GridLayout;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.dialogs.FileDialogBuilder;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import com.googlecode.lanterna.gui2.menu.Menu;
+import com.googlecode.lanterna.gui2.menu.MenuBar;
+import com.googlecode.lanterna.gui2.Label;
+import com.googlecode.lanterna.gui2.menu.MenuItem;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
 
 //defines a card
 class Card {
@@ -16,6 +38,9 @@ class Card {
 }
 
 public class App {
+    private static Label handDisplayLabel;
+    private static Screen gameScreen;
+
     public static void VadymWork() {
         System.out.println("Vadym's work goes here");
     }
@@ -92,6 +117,73 @@ public class App {
     public static void GregWork() {
         System.out.println("Greg's work goes here");
         displayHand(new ArrayList<Card>());
+        mainMenu();
+    }
+
+    public static void mainMenu() {
+        System.out.println("Main menu goes here");
+        try {
+            Terminal terminal = new DefaultTerminalFactory().createTerminal();
+            Screen screen = new TerminalScreen(terminal);
+            screen.startScreen();
+            gameScreen = screen;
+
+            final MultiWindowTextGUI textGUI = new MultiWindowTextGUI(
+                    screen,
+                    new DefaultWindowManager(),
+                    new EmptySpace(TextColor.ANSI.BLUE));
+
+            final BasicWindow window = new BasicWindow("Five Card Draw");
+            MenuBar menubar = new MenuBar();
+
+            handDisplayLabel = new Label("Select Game -> Start Game to deal cards.");
+
+            // "Game" menu
+            Menu menuGame = new Menu("Game");
+            menuGame.add(new MenuItem("Start Game", () -> {
+                if (gameScreen != null) {
+                    gameScreen.clear();
+                    try {
+                        gameScreen.refresh();
+                    } catch (IOException e) {
+                        throw new RuntimeException("Unable to refresh Lanterna screen", e);
+                    }
+                }
+                displayHand(new ArrayList<Card>());
+            }));
+            menubar.add(menuGame);
+
+            // "File" menu
+            Menu menuFile = new Menu("File");
+            menuFile.add(new MenuItem("Exit", window::close));
+            menubar.add(menuFile);
+
+            // "Help" menu
+            Menu menuHelp = new Menu("Help");
+            menuHelp.add(new MenuItem("Homepage", () -> MessageDialog.showMessageDialog(
+                    textGUI,
+                    "Homepage",
+                    "https://github.com/mabe02/lanterna",
+                    MessageDialogButton.OK)));
+            menuHelp.add(new MenuItem("About", () -> MessageDialog.showMessageDialog(
+                    textGUI,
+                    "About",
+                    "Lanterna drop-down menu",
+                    MessageDialogButton.OK)));
+            menubar.add(menuHelp);
+
+            window.setMenuBar(menubar);
+                window.setComponent(
+                    new Panel(new GridLayout(1))
+                        .addComponent(new Label("Use the menu bar to interact."))
+                        .addComponent(new EmptySpace(new TerminalSize(1, 1)))
+                        .addComponent(handDisplayLabel));
+            textGUI.addWindowAndWait(window);
+            screen.stopScreen();
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to start Lanterna menu demo", e);
+        }
+
     }
 
     public static void displayHand(ArrayList<Card> hand) {
@@ -114,43 +206,46 @@ public class App {
         // #############################################
 
 
-        // It goes line by line like a printer
+        StringBuilder handText = new StringBuilder();
         for (int i = 0; i < hand.size(); i++) {
-            Card card = hand.get(i);
-            System.out.print(cardTop);
+            handText.append(cardTop);
         }
-        System.out.println();
+        handText.append('\n');
 
         for (int i = 0; i < hand.size(); i++) {
             Card card = hand.get(i);
-            System.out.print(card.detailsTop[0] + card.detailsTop[1] + card.detailsTop[2]
-                    + card.detailsTop[3] + card.detailsTop[4] + card.detailsTop[5]);
+            handText.append(card.detailsTop[0]).append(card.detailsTop[1]).append(card.detailsTop[2])
+                    .append(card.detailsTop[3]).append(card.detailsTop[4]).append(card.detailsTop[5]);
         }
-        System.out.println();
+        handText.append('\n');
+
+        for (int i = 0; i < hand.size(); i++) {
+            handText.append(cardMiddle);
+        }
+        handText.append('\n');
 
         for (int i = 0; i < hand.size(); i++) {
             Card card = hand.get(i);
-            System.out.print(cardMiddle);
+            handText.append(card.detailsBottom[0]).append(card.detailsBottom[1]).append(card.detailsBottom[2])
+                    .append(card.detailsBottom[3]).append(card.detailsBottom[4]).append(card.detailsBottom[5]);
         }
-        System.out.println();
+        handText.append('\n');
 
         for (int i = 0; i < hand.size(); i++) {
-            Card card = hand.get(i);
-            System.out.print(card.detailsBottom[0] + card.detailsBottom[1] + card.detailsBottom[2]
-                    + card.detailsBottom[3] + card.detailsBottom[4] + card.detailsBottom[5]);
+            handText.append(cardBottom);
         }
-        System.out.println();
 
-        for (int i = 0; i < hand.size(); i++) {
-            System.out.print(cardBottom);
+        if (handDisplayLabel != null) {
+            handDisplayLabel.setText(handText.toString());
         }
-        System.out.println();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         VadymWork();
         KrisWork();
         PatrickWork();
         GregWork();
+        
+
     }
 }
