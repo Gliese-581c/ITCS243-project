@@ -11,6 +11,8 @@ import java.util.Stack;
 class Card {
     String suit;
     String rank;
+    String[] detailsTop;
+    String[] detailsBottom;
 }
 
 public class App {
@@ -44,14 +46,21 @@ public class App {
 
     public static ArrayList<Card> cardBuilder(ArrayList<Card> shuffler) {
         // builds 52 new card objects and adds them to the arraylist
-        String[] suits = { "Hearts", "Spades", "Diamonds", "Clubs" };
-        String[] ranks = { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen",
-                "King " };
+        String[] suits = { "♥", "♠", "♦", "♣" };
+        String[] ranks = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q",
+                "K" };
         for (int i = 0; i < suits.length; i++) {
             for (int j = 0; j < ranks.length; j++) {
                 Card card = new Card();
                 card.suit = suits[i];
                 card.rank = ranks[j];
+                if (ranks[j].equals("10")) {
+                    card.detailsTop = new String[] { "|", ranks[j], "  ", suits[i], "|", " " };
+                    card.detailsBottom = new String[] { "|", suits[i], "  ", ranks[j], "|", " " };
+                } else {
+                card.detailsTop = new String[] { "|", ranks[j], "   ", suits[i], "|", " " };
+                card.detailsBottom = new String[] { "|", suits[i], "   ", ranks[j], "|", " " };
+                }
                 shuffler.add(card);
             }
         }
@@ -82,6 +91,60 @@ public class App {
 
     public static void GregWork() {
         System.out.println("Greg's work goes here");
+        displayHand(new ArrayList<Card>());
+    }
+
+    public static void displayHand(ArrayList<Card> hand) {
+        // Displays the hand of cards in a 6x6 grid format
+        String cardTop = "┌─────┐ ";
+        String cardMiddle = "│     │ ";
+        String cardBottom = "└─────┘ ";
+
+
+        // Display five randoms for now ################
+        hand.clear();
+        ArrayList<Card> tempshuffler = arrayBuilder();
+        tempshuffler = cardBuilder(tempshuffler);
+        Stack<Card> tempdeck = new Stack<Card>();
+        tempdeck = deckbuilder(tempshuffler, tempdeck);
+        for (int i = 0; i < 5; i++) {
+            Card card = tempdeck.pop();
+            hand.add(card);
+        }
+        // #############################################
+
+
+        // It goes line by line like a printer
+        for (int i = 0; i < hand.size(); i++) {
+            Card card = hand.get(i);
+            System.out.print(cardTop);
+        }
+        System.out.println();
+
+        for (int i = 0; i < hand.size(); i++) {
+            Card card = hand.get(i);
+            System.out.print(card.detailsTop[0] + card.detailsTop[1] + card.detailsTop[2]
+                    + card.detailsTop[3] + card.detailsTop[4] + card.detailsTop[5]);
+        }
+        System.out.println();
+
+        for (int i = 0; i < hand.size(); i++) {
+            Card card = hand.get(i);
+            System.out.print(cardMiddle);
+        }
+        System.out.println();
+
+        for (int i = 0; i < hand.size(); i++) {
+            Card card = hand.get(i);
+            System.out.print(card.detailsBottom[0] + card.detailsBottom[1] + card.detailsBottom[2]
+                    + card.detailsBottom[3] + card.detailsBottom[4] + card.detailsBottom[5]);
+        }
+        System.out.println();
+
+        for (int i = 0; i < hand.size(); i++) {
+            System.out.print(cardBottom);
+        }
+        System.out.println();
     }
 
     public static void main(String[] args) {
