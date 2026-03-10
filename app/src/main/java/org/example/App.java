@@ -8,6 +8,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Stack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //defines a card
 class Card implements Comparable<Card> {
     public int compareTo(Card other) {
@@ -28,36 +31,37 @@ public class App {
         System.out.println("Vadym's work goes here");
     }
 
-    public static void KrisWork() {
+    public static void KrisWork(Deck<Card> deck) {
         System.out.println("Kris's work goes here");
         //deals hands and shows player theirs
-        // Stack<Card> player = drawHand(deck);
-        // System.out.println("Your hand is: ");
-        // for (int i = 0; i <= 4; i++) {
-        //    Card card = player.get(i);
-        //    System.out.println(card.rank + " of " + card.suit);
-        // }
+         Stack<Card> player = drawHand(deck);
+         System.out.println("Your hand is: ");
+         for (int i = 0; i <= 4; i++) {
+            Card card = player.get(i);
+           System.out.println(card.rank + " of " + card.suit);
+        }
          
-        //Stack<Card> house = drawHand(deck);
+        Stack<Card> house = drawHand(deck);
     }
 
     //deals cards from the deck
-    //public static Stack<Card> drawHand(Stack<Card> deck) {
-      //  Stack<Card> hand = new Stack<Card>();
-        //for( int i = 0; i <= 4; i++) {
-          //  Card card = deck.pop();
-            //hand.push(card);
-        //}
-        //return hand;
-    //}
+    public static Stack<Card> drawHand(Stack<Card> deck) {
+        Stack<Card> hand = new Stack<Card>();
+        for( int i = 0; i <= 4; i++) {
+            Card card = deck.pop();
+            hand.push(card);
+        }
+        return hand;
+    }
 
     public static void PatrickWork() {
         System.out.println("Patrick's work goes here");
+
         ArrayList<Card> shuffler = new ArrayList<Card>();
         shuffler = cardBuilder(shuffler);
         Stack<Card> deck = new Stack<Card>();
         deck = deckbuilder(shuffler, deck);
-
+        return deck;
         // test hand
         ArrayList<Card> hand1 = new ArrayList<Card>();
         for (int i = 0; i < 5; i++) {
@@ -269,8 +273,8 @@ public class App {
 
     public static void main(String[] args) {
         VadymWork();
-        KrisWork();
-        PatrickWork();
+        deck = PatrickWork();
+        KrisWork(deck);
         GregWork();
     }
 }
