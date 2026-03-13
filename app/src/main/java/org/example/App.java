@@ -358,7 +358,7 @@ public class App {
             window.setMenuBar(menubar);
                 window.setComponent(
                     new Panel(new GridLayout(1))
-                        .addComponent(new Label("Use the menu bar to interact."))
+                        .addComponent(new Label("Use Arrow keys to navigate the menu bar and Enter to interact."))
                         .addComponent(new EmptySpace(new TerminalSize(1, 1)))
                         .addComponent(handDisplayLabel));
             textGUI.addWindowAndWait(window);
