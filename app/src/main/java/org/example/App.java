@@ -378,7 +378,7 @@ public class App {
 
         // Display five randoms for now ################
         hand.clear();
-        ArrayList<Card> tempshuffler = arrayBuilder();
+        ArrayList<Card> tempshuffler = new ArrayList<>();
         tempshuffler = cardBuilder(tempshuffler);
         Stack<Card> tempdeck = new Stack<Card>();
         tempdeck = deckbuilder(tempshuffler, tempdeck);
