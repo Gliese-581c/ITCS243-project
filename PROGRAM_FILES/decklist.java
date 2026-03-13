@@ -43,10 +43,12 @@ public class decklist {
         return hand;
     }
 
-    public static ArrayList<Card> arrayBuilder() {
-        // initializes the deckbuilding arraylist
-        ArrayList<Card> shuffler = new ArrayList<Card>();
-        return shuffler;
+        // Print statement I used for testing
+        while (!deck.isEmpty()) {
+            Card card = deck.pop();
+            System.out.println(card.rank + " of " + card.suit);
+        }
+
     }
 
     public static ArrayList<Card> cardBuilder(ArrayList<Card> shuffler) {
@@ -65,7 +67,8 @@ public class decklist {
         return shuffler;
     }
 
-    //converts a stack back into an arraylist, to be passed back into the deckbuilder
+    // converts a stack back into an arraylist, to be passed back into the
+    // deckbuilder
     public static ArrayList<Card> deckrebuilder(Stack<Card> deck) {
         ArrayList<Card> shuffler = new ArrayList<Card>();
         while (!deck.isEmpty()) {
@@ -88,5 +91,3 @@ public class decklist {
 
     
 }
-
-
