@@ -6,6 +6,28 @@ package org.example;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
+import java.io.File;
+import java.io.IOException;
+
+import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.DefaultWindowManager;
+import com.googlecode.lanterna.gui2.EmptySpace;
+import com.googlecode.lanterna.gui2.GridLayout;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.dialogs.FileDialogBuilder;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import com.googlecode.lanterna.gui2.menu.Menu;
+import com.googlecode.lanterna.gui2.menu.MenuBar;
+import com.googlecode.lanterna.gui2.Label;
+import com.googlecode.lanterna.gui2.menu.MenuItem;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
 
 //defines a card, includes code to compare and sort cards in a hand
 class Card implements Comparable<Card> {
@@ -19,6 +41,8 @@ class Card implements Comparable<Card> {
 
     String suit;
     String rank;
+    String[] detailsTop;
+    String[] detailsBottom;
 
     // this variable is necessary for the compareTo method
     int value;
@@ -37,6 +61,11 @@ class Card implements Comparable<Card> {
 }
 
 public class App {
+    private static Label handDisplayLabel;
+    private static Screen gameScreen;
+
+    public static void VadymWork() {
+        System.out.println("Vadym's work goes here");
 
     public static void KrisWork(Stack<Card> deck) {
 
@@ -273,14 +302,21 @@ public class App {
 
     public static ArrayList<Card> cardBuilder(ArrayList<Card> shuffler) {
         // builds 52 new card objects and adds them to the arraylist
-        String[] suits = { "Hearts", "Spades", "Diamonds", "Clubs" };
-        String[] ranks = { "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen",
-                "King" };
+        String[] suits = { "♥", "♠", "♦", "♣" };
+        String[] ranks = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q",
+                "K" };
         for (int i = 0; i < suits.length; i++) {
             for (int j = 0; j < ranks.length; j++) {
                 Card card = new Card();
                 card.suit = suits[i];
                 card.rank = ranks[j];
+                if (ranks[j].equals("10")) {
+                    card.detailsTop = new String[] { "|", ranks[j], "  ", suits[i], "|", " " };
+                    card.detailsBottom = new String[] { "|", suits[i], "  ", ranks[j], "|", " " };
+                } else {
+                card.detailsTop = new String[] { "|", ranks[j], "   ", suits[i], "|", " " };
+                card.detailsBottom = new String[] { "|", suits[i], "   ", ranks[j], "|", " " };
+                }
 
                 // note that kings are high in this format. Aces are low.
                 // Card values are one digit higher than their position in the array.
@@ -318,17 +354,137 @@ public class App {
     }
 
     public static void GregWork() {
+        System.out.println("Greg's work goes here");
+        displayHand(new ArrayList<Card>());
+        mainMenu();
+    }
+
+    public static void mainMenu() {
+        System.out.println("Main menu goes here");
+        try {
+            Terminal terminal = new DefaultTerminalFactory().createTerminal();
+            Screen screen = new TerminalScreen(terminal);
+            screen.startScreen();
+            gameScreen = screen;
+
+            final MultiWindowTextGUI textGUI = new MultiWindowTextGUI(
+                    screen,
+                    new DefaultWindowManager(),
+                    new EmptySpace(TextColor.ANSI.BLUE));
+
+            final BasicWindow window = new BasicWindow("Five Card Draw");
+            MenuBar menubar = new MenuBar();
+
+            handDisplayLabel = new Label("Select Game -> Start Game to deal cards.");
+
+            // "Game" menu
+            Menu menuGame = new Menu("Game");
+            menuGame.add(new MenuItem("Start Game", () -> {
+                if (gameScreen != null) {
+                    gameScreen.clear();
+                    try {
+                        gameScreen.refresh();
+                    } catch (IOException e) {
+                        throw new RuntimeException("Unable to refresh Lanterna screen", e);
+                    }
+                }
+                displayHand(new ArrayList<Card>());
+            }));
+            menubar.add(menuGame);
+
+            // "File" menu
+            Menu menuFile = new Menu("File");
+            menuFile.add(new MenuItem("Exit", window::close));
+            menubar.add(menuFile);
+
+            // "Help" menu
+            Menu menuHelp = new Menu("Help");
+            menuHelp.add(new MenuItem("Homepage", () -> MessageDialog.showMessageDialog(
+                    textGUI,
+                    "Homepage",
+                    "https://github.com/mabe02/lanterna",
+                    MessageDialogButton.OK)));
+            menuHelp.add(new MenuItem("About", () -> MessageDialog.showMessageDialog(
+                    textGUI,
+                    "About",
+                    "Lanterna drop-down menu",
+                    MessageDialogButton.OK)));
+            menubar.add(menuHelp);
+
+            window.setMenuBar(menubar);
+                window.setComponent(
+                    new Panel(new GridLayout(1))
+                        .addComponent(new Label("Use Arrow keys to navigate the menu bar and Enter to interact."))
+                        .addComponent(new EmptySpace(new TerminalSize(1, 1)))
+                        .addComponent(handDisplayLabel));
+            textGUI.addWindowAndWait(window);
+            screen.stopScreen();
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to start Lanterna menu demo", e);
+        }
 
     }
 
-    public static void VadymWork() {
+    public static void displayHand(ArrayList<Card> hand) {
+        // Displays the hand of cards in a 6x6 grid format
+        String cardTop = "┌─────┐ ";
+        String cardMiddle = "│     │ ";
+        String cardBottom = "└─────┘ ";
 
+
+        // Display five randoms for now ################
+        hand.clear();
+        ArrayList<Card> tempshuffler = new ArrayList<>();
+        tempshuffler = cardBuilder(tempshuffler);
+        Stack<Card> tempdeck = new Stack<Card>();
+        tempdeck = deckbuilder(tempshuffler, tempdeck);
+        for (int i = 0; i < 5; i++) {
+            Card card = tempdeck.pop();
+            hand.add(card);
+        }
+        // #############################################
+
+
+        StringBuilder handText = new StringBuilder();
+        for (int i = 0; i < hand.size(); i++) {
+            handText.append(cardTop);
+        }
+        handText.append('\n');
+
+        for (int i = 0; i < hand.size(); i++) {
+            Card card = hand.get(i);
+            handText.append(card.detailsTop[0]).append(card.detailsTop[1]).append(card.detailsTop[2])
+                    .append(card.detailsTop[3]).append(card.detailsTop[4]).append(card.detailsTop[5]);
+        }
+        handText.append('\n');
+
+        for (int i = 0; i < hand.size(); i++) {
+            handText.append(cardMiddle);
+        }
+        handText.append('\n');
+
+        for (int i = 0; i < hand.size(); i++) {
+            Card card = hand.get(i);
+            handText.append(card.detailsBottom[0]).append(card.detailsBottom[1]).append(card.detailsBottom[2])
+                    .append(card.detailsBottom[3]).append(card.detailsBottom[4]).append(card.detailsBottom[5]);
+        }
+        handText.append('\n');
+
+        for (int i = 0; i < hand.size(); i++) {
+            handText.append(cardBottom);
+        }
+
+        if (handDisplayLabel != null) {
+            handDisplayLabel.setText(handText.toString());
+        }
     }
 
-    public static void main(String[] args) {
-        // GregWork();
-        // VadymWork();
+    public static void main(String[] args) throws IOException {
+        VadymWork();
         var deck = PatrickWork();
         KrisWork(deck);
+        GregWork();
+        
+
     }
 }
