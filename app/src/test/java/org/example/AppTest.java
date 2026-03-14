@@ -5,10 +5,251 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
 
 class AppTest {
-    @Test void appHasAGreeting() {
-        App classUnderTest = new App();
-        //assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
+    @Test
+    void royal_flush() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 14;
+        hand.add(card);
+        card = new Card();
+        card.value = 13;
+        hand.add(card);
+        card = new Card();
+        card.value = 12;
+        hand.add(card);
+        card = new Card();
+        card.value = 10;
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        hand.add(card);
+        assertEquals("\nRoyal Flush\n", App.define_hands(hand));
+    }
+
+    @Test
+    void straight_flush() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 13;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 12;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 9;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 10;
+        card.suit = "Hearts";
+        hand.add(card);
+        assertEquals("\nStraight Flush\n", App.define_hands(hand));
+    }
+
+    @Test
+    void four_of_a_kind() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 13;
+        hand.add(card);
+        card = new Card();
+        card.value = 13;
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        hand.add(card);
+        card = new Card();
+        card.value = 13;
+        hand.add(card);
+        card = new Card();
+        card.value = 13;
+        hand.add(card);
+        assertEquals("\nFour of a Kind\n", App.define_hands(hand));
+    }
+
+    @Test
+    void full_house() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 13;
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        hand.add(card);
+        card = new Card();
+        card.value = 13;
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        hand.add(card);
+        assertEquals("\nFull House\n", App.define_hands(hand));
+    }
+
+    @Test
+    void flush() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.suit = "Hearts";
+        card.value = 13;
+        hand.add(card);
+        card = new Card();
+        card.suit = "Hearts";
+        card.value = 12;
+        hand.add(card);
+        card = new Card();
+        card.suit = "Hearts";
+        card.value = 11;
+        hand.add(card);
+        card = new Card();
+        card.suit = "Hearts";
+        card.value = 1;
+        hand.add(card);
+        card = new Card();
+        card.suit = "Hearts";
+        card.value = 10;
+        hand.add(card);
+        assertEquals("\nFlush\n", App.define_hands(hand));
+    }
+
+    @Test
+    void straight() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 13;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 12;
+        card.suit = "Spades";
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        card.suit = "Diamonds";
+        hand.add(card);
+        card = new Card();
+        card.value = 10;
+        card.suit = "Clubs";
+        hand.add(card);
+        card = new Card();
+        card.value = 9;
+        card.suit = "Hearts";
+        hand.add(card);
+        assertEquals("\nStraight\n", App.define_hands(hand));
+    }
+
+    @Test
+    void three_of_a_kind() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 13;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 9;
+        card.suit = "Clubs";
+        hand.add(card);
+        card = new Card();
+        card.value = 13;
+        card.suit = "Spades";
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        card.suit = "Diamonds";
+        hand.add(card);
+        card = new Card();
+        card.value = 13;
+        card.suit = "Hearts";
+        hand.add(card);
+        assertEquals("\nThree of a Kind\n", App.define_hands(hand));
+    }
+
+    @Test
+    void two_pair() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 13;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 9;
+        card.suit = "Clubs";
+        hand.add(card);
+        card = new Card();
+        card.value = 13;
+        card.suit = "Spades";
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        card.suit = "Diamonds";
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        card.suit = "Hearts";
+        hand.add(card);
+        assertEquals("\nTwo Pair\n", App.define_hands(hand));
+    }
+
+    @Test
+    void one_pair() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 13;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 9;
+        card.suit = "Clubs";
+        hand.add(card);
+        card = new Card();
+        card.value = 12;
+        card.suit = "Spades";
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        card.suit = "Diamonds";
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        card.suit = "Hearts";
+        hand.add(card);
+        assertEquals("\nOne Pair\n", App.define_hands(hand));
+    }
+
+    @Test
+    void high_card() {
+        ArrayList<Card> hand = new ArrayList<Card>();
+        Card card = new Card();
+        card.value = 13;
+        card.suit = "Hearts";
+        hand.add(card);
+        card = new Card();
+        card.value = 9;
+        card.suit = "Clubs";
+        hand.add(card);
+        card = new Card();
+        card.value = 12;
+        card.suit = "Spades";
+        hand.add(card);
+        card = new Card();
+        card.value = 11;
+        card.suit = "Diamonds";
+        hand.add(card);
+        card = new Card();
+        card.value = 8;
+        card.suit = "Hearts";
+        hand.add(card);
+        assertEquals("\nHigh Card\n", App.define_hands(hand));
     }
 }
