@@ -64,9 +64,6 @@ public class App {
     private static Label handDisplayLabel;
     private static Screen gameScreen;
 
-    public static void VadymWork() {
-        System.out.println("Vadym's work goes here");
-
     public static void KrisWork(Stack<Card> deck) {
 
         // deals hands and shows player theirs
@@ -314,8 +311,8 @@ public class App {
                     card.detailsTop = new String[] { "|", ranks[j], "  ", suits[i], "|", " " };
                     card.detailsBottom = new String[] { "|", suits[i], "  ", ranks[j], "|", " " };
                 } else {
-                card.detailsTop = new String[] { "|", ranks[j], "   ", suits[i], "|", " " };
-                card.detailsBottom = new String[] { "|", suits[i], "   ", ranks[j], "|", " " };
+                    card.detailsTop = new String[] { "|", ranks[j], "   ", suits[i], "|", " " };
+                    card.detailsBottom = new String[] { "|", suits[i], "   ", ranks[j], "|", " " };
                 }
 
                 // note that kings are high in this format. Aces are low.
@@ -354,7 +351,7 @@ public class App {
     }
 
     public static void GregWork() {
-        System.out.println("Greg's work goes here");
+        // System.out.println("Greg's work goes here");
         displayHand(new ArrayList<Card>());
         mainMenu();
     }
@@ -412,11 +409,11 @@ public class App {
             menubar.add(menuHelp);
 
             window.setMenuBar(menubar);
-                window.setComponent(
+            window.setComponent(
                     new Panel(new GridLayout(1))
-                        .addComponent(new Label("Use Arrow keys to navigate the menu bar and Enter to interact."))
-                        .addComponent(new EmptySpace(new TerminalSize(1, 1)))
-                        .addComponent(handDisplayLabel));
+                            .addComponent(new Label("Use Arrow keys to navigate the menu bar and Enter to interact."))
+                            .addComponent(new EmptySpace(new TerminalSize(1, 1)))
+                            .addComponent(handDisplayLabel));
             textGUI.addWindowAndWait(window);
             screen.stopScreen();
         } catch (IOException e) {
@@ -431,7 +428,6 @@ public class App {
         String cardMiddle = "│     │ ";
         String cardBottom = "└─────┘ ";
 
-
         // Display five randoms for now ################
         hand.clear();
         ArrayList<Card> tempshuffler = new ArrayList<>();
@@ -443,7 +439,6 @@ public class App {
             hand.add(card);
         }
         // #############################################
-
 
         StringBuilder handText = new StringBuilder();
         for (int i = 0; i < hand.size(); i++) {
@@ -479,12 +474,15 @@ public class App {
         }
     }
 
+    public static void VadymWork() {
+        System.out.println("Vadym's work goes here");
+    }
+
     public static void main(String[] args) throws IOException {
-        VadymWork();
+        // VadymWork();
         var deck = PatrickWork();
         KrisWork(deck);
         GregWork();
-        
 
     }
 }
