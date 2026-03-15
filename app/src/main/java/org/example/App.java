@@ -18,6 +18,7 @@ import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.GridLayout;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.Interactable;
 import com.googlecode.lanterna.gui2.dialogs.FileDialogBuilder;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
@@ -63,19 +64,25 @@ class Card implements Comparable<Card> {
 
 public class App {
     private static Label handDisplayLabel;
+    private static Label houseDisplayLabel;
+    private static Label statusLabel;
     private static Screen gameScreen;
     private static Panel rootPanel;
     private static Panel handActionPanel;
     private static BasicWindow mainWindow;
+    private static MenuBar mainMenuBar;
+    private static ArrayList<Card> player;
+    private static ArrayList<Card> house;
+    private static boolean revealHouseCards;
 
     public static void VadymWork() {
         System.out.println("Vadym's work goes here");
-
+    }
     public static void KrisWork(Stack<Card> deck) {
 
         // deals hands and shows player theirs
-        ArrayList<Card> player = drawHand(deck);
-        ArrayList<Card> house = drawHand(deck);
+        player = drawHand(deck);
+        house = drawHand(deck);
 
         /*
          * for (int i = 0; i <= 4; i++) {
@@ -180,7 +187,7 @@ public class App {
             return "\nHigh Card\n";
         }
     }
-
+    
     public static boolean royal_flush(ArrayList<Card> hand) {
         if (hand.get(0).value == 14 && hand.get(1).value == 13
                 && hand.get(2).value == 12 && hand.get(3).value == 11
@@ -359,7 +366,6 @@ public class App {
 
     public static void GregWork() {
         System.out.println("Greg's work goes here");
-        displayHand(new ArrayList<Card>());
         mainMenu();
     }
 
@@ -377,9 +383,23 @@ public class App {
                     new EmptySpace(TextColor.ANSI.BLUE));
 
             final BasicWindow window = new BasicWindow("Five Card Draw");
+            mainWindow = window;
             MenuBar menubar = new MenuBar();
+            mainMenuBar = menubar;
 
-            handDisplayLabel = new Label("Select Game -> Start Game to deal cards.");
+            statusLabel = new Label("Select Game -> Start Game to deal cards.");
+            handDisplayLabel = new Label("(Player hand not dealt)");
+            houseDisplayLabel = new Label("(House hand not dealt)");
+            rootPanel = new Panel(new GridLayout(1));
+            rootPanel.addComponent(new Label("Use arrow keys to navigate the menu bar and Enter to interact."));
+            rootPanel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+            rootPanel.addComponent(statusLabel);
+            rootPanel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+            rootPanel.addComponent(new Label("Player Hand"));
+            rootPanel.addComponent(handDisplayLabel);
+            rootPanel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+            rootPanel.addComponent(new Label("House Hand"));
+            rootPanel.addComponent(houseDisplayLabel);
 
             // "Game" menu
             Menu menuGame = new Menu("Game");
@@ -393,8 +413,7 @@ public class App {
                         throw new RuntimeException("Unable to refresh Lanterna screen", e);
                     }
                 }
-                rootPanel = new Panel(new GridLayout(1));
-                displayHand(new ArrayList<Card>());
+                dealAndDisplayHands();
                 showCardActionButtons();
             }));
             menubar.add(menuGame);
@@ -419,11 +438,7 @@ public class App {
             menubar.add(menuHelp);
 
             window.setMenuBar(menubar);
-                window.setComponent(
-                    new Panel(new GridLayout(1))
-                        .addComponent(new Label("Use arrow keys to navigate the menu bar and Enter to interact."))
-                        .addComponent(new EmptySpace(new TerminalSize(1, 1)))
-                        .addComponent(handDisplayLabel));
+            window.setComponent(rootPanel);
             textGUI.addWindowAndWait(window);
             screen.stopScreen();
         } catch (IOException e) {
@@ -432,25 +447,11 @@ public class App {
 
     }
 
-    public static void displayHand(ArrayList<Card> hand) {
-        // Displays the hand of cards in a 6x6 grid format
+    private static String handToText(ArrayList<Card> hand) {
+        // Render a single hand using the same card art used elsewhere.
         String cardTop = "┌─────┐ ";
         String cardMiddle = "│     │ ";
         String cardBottom = "└─────┘ ";
-
-
-        // Display five randoms for now ################
-        hand.clear();
-        ArrayList<Card> tempshuffler = new ArrayList<>();
-        tempshuffler = cardBuilder(tempshuffler);
-        Stack<Card> tempdeck = new Stack<Card>();
-        tempdeck = deckbuilder(tempshuffler, tempdeck);
-        for (int i = 0; i < 5; i++) {
-            Card card = tempdeck.pop();
-            hand.add(card);
-        }
-        // #############################################
-
 
         StringBuilder handText = new StringBuilder();
         for (int i = 0; i < hand.size(); i++) {
@@ -481,45 +482,133 @@ public class App {
             handText.append(cardBottom);
         }
 
+        return handText.toString();
+    }
+
+    private static String hiddenHandToText(int cardCount) {
+        String cardTop = "┌─────┐ ";
+        String cardMiddle = "│     │ ";
+        String cardBottom = "└─────┘ ";
+
+        StringBuilder handText = new StringBuilder();
+        for (int i = 0; i < cardCount; i++) {
+            handText.append(cardTop);
+        }
+        handText.append('\n');
+
+        for (int i = 0; i < cardCount; i++) {
+            handText.append("|?   ?| ");
+        }
+        handText.append('\n');
+
+        for (int i = 0; i < cardCount; i++) {
+            handText.append(cardMiddle);
+        }
+        handText.append('\n');
+
+        for (int i = 0; i < cardCount; i++) {
+            handText.append("|?   ?| ");
+        }
+        handText.append('\n');
+
+        for (int i = 0; i < cardCount; i++) {
+            handText.append(cardBottom);
+        }
+
+        return handText.toString();
+    }
+
+    private static void displayHands(ArrayList<Card> playerHand, ArrayList<Card> houseHand) {
         if (handDisplayLabel != null) {
-            handDisplayLabel.setText(handText.toString());
+            handDisplayLabel.setText(handToText(playerHand));
+        }
+        if (houseDisplayLabel != null) {
+            if (revealHouseCards) {
+                houseDisplayLabel.setText(handToText(houseHand));
+            } else {
+                houseDisplayLabel.setText(hiddenHandToText(houseHand.size()));
+            }
+        }
+    }
+
+    private static void dealAndDisplayHands() {
+        ArrayList<Card> shuffler = new ArrayList<>();
+        shuffler = cardBuilder(shuffler);
+        Stack<Card> deck = new Stack<>();
+        deck = deckbuilder(shuffler, deck);
+
+        player = drawHand(deck);
+        house = drawHand(deck);
+        revealHouseCards = false;
+        displayHands(player, house);
+
+        if (statusLabel != null) {
+            statusLabel.setText("Round ready. Choose High or Low, or Redraw.");
         }
     }
 
     private static void showCardActionButtons() {
-    if (rootPanel == null || handActionPanel != null) return;
-
-    handActionPanel = new Panel(new GridLayout(3));
-    /* TODO: Add logic for the hand menu buttons */
-    handActionPanel.addComponent(new Button("High", () -> { 
-        /* use compare hands to check if high */ }));
-
-    handActionPanel.addComponent(new Button("Low", () -> { 
-        /* use compare hands to check if low */ }));
-
-    handActionPanel.addComponent(new Button("Redraw", () -> {                 
-        if (gameScreen != null) {
-            gameScreen.clear();
-            try {
-                gameScreen.refresh();
-
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to refresh Lanterna screen", e);
-            }
+        if (rootPanel == null || handActionPanel != null) {
+            return;
         }
-        displayHand(new ArrayList<Card>());
-        showCardActionButtons(); }));
 
-    rootPanel.addComponent(handActionPanel);
-    rootPanel.invalidate();
+        handActionPanel = new Panel(new GridLayout(3));
+        handActionPanel.addComponent(new Button("High", () -> resolveRound("High")));
+        handActionPanel.addComponent(new Button("Low", () -> resolveRound("Low")));
+
+        handActionPanel.addComponent(new Button("Redraw", () -> {
+            if (gameScreen != null) {
+                gameScreen.clear();
+                try {
+                    gameScreen.refresh();
+                } catch (IOException e) {
+                    throw new RuntimeException("Unable to refresh Lanterna screen", e);
+                }
+            }
+            dealAndDisplayHands();
+        }));
+
+        rootPanel.addComponent(handActionPanel);
+        rootPanel.invalidate();
+    }
+
+    private static void resolveRound(String choice) {
+        revealHouseCards = true;
+        boolean result = false;
+        if (choice == "High"){
+            result = false;
+        }
+        else if (choice == "Low"){
+            result = true;
+        }
+        String resultText = String.valueOf(result);
+        displayHands(player, house);
+        if (statusLabel != null) {
+            statusLabel.setText("You chose: " + choice + ".\n The actual result was: " + resultText + "\nUse Game -> Start Game to deal again.");
+        }
+        hideCardActionButtons();
     }
 
     private static void hideCardActionButtons() {
-    if (rootPanel == null || handActionPanel == null) return;
+        if (rootPanel == null || handActionPanel == null) {
+            return;
+        }
 
-    rootPanel.removeComponent(handActionPanel);
-    handActionPanel = null;
-    rootPanel.invalidate();
+        rootPanel.removeComponent(handActionPanel);
+        handActionPanel = null;
+        rootPanel.invalidate();
+
+        // Focus can remain on a removed button; move it back to the menu bar.
+        if (mainWindow != null) {
+            Interactable nextFocus = null;
+            if (mainMenuBar != null) {
+                nextFocus = mainMenuBar.nextFocus(null);
+            }
+            if (nextFocus == null && rootPanel != null) {
+                nextFocus = rootPanel.nextFocus(null);
+            }
+            mainWindow.setFocusedInteractable(nextFocus);
+        }
     }
 
     public static void main(String[] args) throws IOException {
