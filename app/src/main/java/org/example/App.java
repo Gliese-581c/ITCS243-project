@@ -13,6 +13,7 @@ import java.io.IOException;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.DefaultWindowManager;
 import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.GridLayout;
@@ -50,6 +51,9 @@ class Card implements Comparable<Card> {
 public class App {
     private static Label handDisplayLabel;
     private static Screen gameScreen;
+    private static Panel rootPanel;
+    private static Panel handActionPanel;
+    private static BasicWindow mainWindow;
 
     public static void VadymWork() {
         System.out.println("Vadym's work goes here");
@@ -328,11 +332,14 @@ public class App {
                     gameScreen.clear();
                     try {
                         gameScreen.refresh();
+
                     } catch (IOException e) {
                         throw new RuntimeException("Unable to refresh Lanterna screen", e);
                     }
                 }
+                rootPanel = new Panel(new GridLayout(1));
                 displayHand(new ArrayList<Card>());
+                showCardActionButtons();
             }));
             menubar.add(menuGame);
 
@@ -358,7 +365,7 @@ public class App {
             window.setMenuBar(menubar);
                 window.setComponent(
                     new Panel(new GridLayout(1))
-                        .addComponent(new Label("Use Arrow keys to navigate the menu bar and Enter to interact."))
+                        .addComponent(new Label("Use arrow keys to navigate the menu bar and Enter to interact."))
                         .addComponent(new EmptySpace(new TerminalSize(1, 1)))
                         .addComponent(handDisplayLabel));
             textGUI.addWindowAndWait(window);
@@ -421,6 +428,42 @@ public class App {
         if (handDisplayLabel != null) {
             handDisplayLabel.setText(handText.toString());
         }
+    }
+
+    private static void showCardActionButtons() {
+    if (rootPanel == null || handActionPanel != null) return;
+
+    handActionPanel = new Panel(new GridLayout(3));
+    /* TODO: Add logic for the hand menu buttons */
+    handActionPanel.addComponent(new Button("High", () -> { 
+        /* use compare hands to check if high */ }));
+
+    handActionPanel.addComponent(new Button("Low", () -> { 
+        /* use compare hands to check if low */ }));
+
+    handActionPanel.addComponent(new Button("Redraw", () -> {                 
+        if (gameScreen != null) {
+            gameScreen.clear();
+            try {
+                gameScreen.refresh();
+
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to refresh Lanterna screen", e);
+            }
+        }
+        displayHand(new ArrayList<Card>());
+        showCardActionButtons(); }));
+
+    rootPanel.addComponent(handActionPanel);
+    rootPanel.invalidate();
+    }
+
+    private static void hideCardActionButtons() {
+    if (rootPanel == null || handActionPanel == null) return;
+
+    rootPanel.removeComponent(handActionPanel);
+    handActionPanel = null;
+    rootPanel.invalidate();
     }
 
     public static void main(String[] args) throws IOException {
