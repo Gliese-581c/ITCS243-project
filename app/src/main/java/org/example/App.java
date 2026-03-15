@@ -425,6 +425,11 @@ public class App {
 
             // "Help" menu
             Menu menuHelp = new Menu("Help");
+            menuHelp.add(new MenuItem("How to Play", () -> MessageDialog.showMessageDialog(
+                    textGUI,
+                    "How to Play",
+                    "Start by dealing the cards with Game > Start Game \nNext, you can look at your hand.\nIf you think your hand will beat the House, choose High.\nIf you think the House Hand will beat yours, choose Low.\nIf you want to try again without guessing, choose to Redraw.",
+                    MessageDialogButton.OK)));
             menuHelp.add(new MenuItem("Homepage", () -> MessageDialog.showMessageDialog(
                     textGUI,
                     "Homepage",
@@ -584,7 +589,14 @@ public class App {
         String resultText = String.valueOf(result);
         displayHands(player, house);
         if (statusLabel != null) {
-            statusLabel.setText("You chose: " + choice + ".\n The actual result was: " + resultText + "\nUse Game -> Start Game to deal again.");
+            statusLabel.setText("You chose: " + choice + ".\n The " + resultText + " had the better hand!" + "\n\nUse Game -> Start Game to deal again.");
+            if (resultText == "Player" && choice == "High") {
+                statusLabel.setText(statusLabel.getText() + "\n\nYou win!");
+            } else if (resultText == "House" && choice == "Low") {
+                statusLabel.setText(statusLabel.getText() + "\n\nYou win!");
+            } else {
+                statusLabel.setText(statusLabel.getText() + "\n\nHouse wins!");
+            }
         }
         hideCardActionButtons();
     }
