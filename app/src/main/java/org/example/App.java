@@ -58,6 +58,9 @@ class Card implements Comparable<Card> {
     // Score card will always be element 5 of the arraylist.
     String score;
     String HighSuit;
+
+    // marks if a card is part of the scoring hand
+    boolean scoring = false;
 }
 
 public class App {
@@ -76,7 +79,6 @@ public class App {
          * System.out.println(card.rank + " of " + card.suit);
          * }
          */
-
         calculateHands(player, house);
     }
 
@@ -122,12 +124,62 @@ public class App {
         Card PlayerScore = new Card();
         PlayerScore.score = define_hands(player);
         PlayerScore.HighSuit = player.get(0).suit;
+        // displayHand(player);
         player.add(PlayerScore);
 
         Card HouseScore = new Card();
         HouseScore.score = define_hands(house);
         HouseScore.HighSuit = house.get(0).suit;
         house.add(HouseScore);
+
+        // uses the value field in the score card to store the "total" score of the
+        // hand. This data is only used in case of a tie.
+        for (Card card : player) {
+            if (card.scoring == true) {
+                player.get(5).value += card.value;
+            }
+        }
+        for (Card card : house) {
+            if (card.scoring == true) {
+                house.get(5).value += card.value;
+            }
+        }
+
+        String result = compareHands(player, house);
+        // System.out.println(result);
+    }
+
+    public static String compareHands(ArrayList<Card> player, ArrayList<Card> house) {
+
+        // test statements
+        System.out.println(player.toString());
+        System.out.println(player.get(5).score);
+        System.out.println(house.toString());
+        System.out.println(house.get(5).score);
+        System.out.println(player.get(5).score.compareTo(house.get(5).score));
+
+        if (player.get(5).score.compareTo(house.get(5).score) > 0) {
+            return "Player";
+        } else if (player.get(5).score.compareTo(house.get(5).score) < 0) {
+            return "House";
+        } else {
+            if (player.get(5).score.compareTo(house.get(5).score) == 0) { // compares hands
+                if (player.get(5).value > house.get(5).value) {
+                    return "Player";
+                } else if (player.get(5).value < house.get(5).value) {
+                    return "House";
+                } else {
+                    if (player.get(5).HighSuit.compareTo(house.get(5).HighSuit) > 0) {
+                        return "Player";
+                    } else if (player.get(5).HighSuit.compareTo(house.get(5).HighSuit) < 0) {
+                        return "House";
+                    } else {
+                        return "Tie";
+                    }
+                }
+            }
+        }
+        return "Something went wrong";
     }
 
     public static String define_hands(ArrayList<Card> hand) {
@@ -152,25 +204,26 @@ public class App {
 
         // string returns are better than integers for readability
         if (royal_flush(hand)) {
-            return "\nRoyal Flush\n";
+            return "Royal Flush";
         } else if (straight_flush(hand)) {
-            return "\nStraight Flush\n";
+            return "Straight Flush";
         } else if (four_of_a_kind(hand)) {
-            return "\nFour of a Kind\n";
+            return "Four of a Kind";
         } else if (full_house(hand)) {
-            return "\nFull House\n";
+            return "Full House";
         } else if (flush(hand)) {
-            return "\nFlush\n";
+            return "Flush";
         } else if (straight(hand)) {
-            return "\nStraight\n";
+            return "Straight";
         } else if (three_of_a_kind(hand)) {
-            return "\nThree of a Kind\n";
+            return "Three of a Kind";
         } else if (two_pair(hand)) {
-            return "\nTwo Pair\n";
+            return "Two Pair";
         } else if (one_pair(hand)) {
-            return "\nOne Pair\n";
-        } else {
-            return "\nHigh Card\n";
+            return "One Pair";
+        } else { // if it isn't anything else, then the hand is a high card
+            hand.get(0).scoring = true;
+            return "High Card";
         }
     }
 
@@ -182,6 +235,9 @@ public class App {
                 && hand.get(0).suit == hand.get(2).suit
                 && hand.get(0).suit == hand.get(3).suit
                 && hand.get(0).suit == hand.get(4).suit) {
+            for (Card card : hand) {
+                card.scoring = true;
+            }
             return true;
         }
         return false;
@@ -196,6 +252,9 @@ public class App {
                     && hand.get(0).suit == hand.get(2).suit
                     && hand.get(0).suit == hand.get(3).suit
                     && hand.get(0).suit == hand.get(4).suit) {
+                for (Card card : hand) {
+                    card.scoring = true;
+                }
                 return true;
             }
         }
@@ -207,12 +266,18 @@ public class App {
         if (hand.get(0).value == hand.get(1).value
                 && hand.get(0).value == hand.get(2).value
                 && hand.get(0).value == hand.get(3).value) {
+            for (int i = 0; i <= 4; i++) {
+                hand.get(i).scoring = true;
+            }
             return true;
         }
         // case if 4 of a kind is low (i.e. hand is k, q, q, q, q)
         else if (hand.get(1).value == hand.get(2).value
                 && hand.get(1).value == hand.get(3).value
                 && hand.get(1).value == hand.get(4).value) {
+            for (int i = 1; i <= 5; i++) {
+                hand.get(i).scoring = true;
+            }
             return true;
         }
         return false;
@@ -223,11 +288,17 @@ public class App {
         if (hand.get(0).value == hand.get(1).value
                 && hand.get(0).value == hand.get(2).value
                 && hand.get(3).value == hand.get(4).value) {
+            for (Card card : hand) {
+                card.scoring = true;
+            }
             return true;
             // case if 3 of a kind is low (i.e. hand is q, q, q, k, k)
         } else if (hand.get(0).value == hand.get(1).value
                 && hand.get(2).value == hand.get(3).value
                 && hand.get(2).value == hand.get(4).value) {
+            for (Card card : hand) {
+                card.scoring = true;
+            }
             return true;
         }
         return false;
@@ -238,6 +309,9 @@ public class App {
                 && hand.get(1).suit == hand.get(2).suit
                 && hand.get(2).suit == hand.get(3).suit
                 && hand.get(3).suit == hand.get(4).suit) {
+            for (Card card : hand) {
+                card.scoring = true;
+            }
             return true;
         }
         return false;
@@ -248,6 +322,9 @@ public class App {
                 && hand.get(1).value == hand.get(2).value + 1
                 && hand.get(2).value == hand.get(3).value + 1
                 && hand.get(3).value == hand.get(4).value + 1) {
+            for (Card card : hand) {
+                card.scoring = true;
+            }
             return true;
         }
         return false;
@@ -257,14 +334,23 @@ public class App {
         // case if 3 of a kind is high (i.e. hand is k, k, k, q, j)
         if (hand.get(0).value == hand.get(1).value
                 && hand.get(1).value == hand.get(2).value) {
+            for (int i = 0; i <= 2; i++) {
+                hand.get(i).scoring = true;
+            }
             return true;
             // case if 3 of a kind is mid (i.e. hand is k, q, q, q, a)
         } else if (hand.get(1).value == hand.get(2).value
                 && hand.get(2).value == hand.get(3).value) {
+            for (int i = 1; i <= 3; i++) {
+                hand.get(i).scoring = true;
+            }
             return true;
             // case if 3 of a kind is low (i.e. hand is k, q, j, j, j))
         } else if (hand.get(2).value == hand.get(3).value
                 && hand.get(3).value == hand.get(4).value) {
+            for (int i = 2; i <= 4; i++) {
+                hand.get(i).scoring = true;
+            }
             return true;
         }
         return false;
@@ -272,29 +358,47 @@ public class App {
 
     public static boolean two_pair(ArrayList<Card> hand) {
         if (hand.get(0).value == hand.get(1).value
-                && hand.get(2).value == hand.get(3).value // k, k, q, q, j
-                || hand.get(0).value == hand.get(1).value
-                        && hand.get(3).value == hand.get(4).value // k, k, q, j, j
-                || hand.get(1).value == hand.get(2).value
-                        && hand.get(3).value == hand.get(4).value) { // k, q, q, j, j
+                && hand.get(2).value == hand.get(3).value) { // k, k, q, q, j
+            for (int i = 0; i <= 3; i++) {
+                hand.get(i).scoring = true;
+            }
+            return true;
+        } else if (hand.get(0).value == hand.get(1).value
+                && hand.get(3).value == hand.get(4).value) { // k, k, q, j, j
+            hand.get(0).scoring = true;
+            hand.get(1).scoring = true;
+            hand.get(3).scoring = true;
+            hand.get(4).scoring = true;
+            return true;
+        } else if (hand.get(1).value == hand.get(2).value
+                && hand.get(3).value == hand.get(4).value) { // k, q, q, j, j
+            for (int i = 1; i <= 4; i++) {
+                hand.get(i).scoring = true;
+            }
             return true;
         }
         return false;
     }
 
     public static boolean one_pair(ArrayList<Card> hand) {
-        if (hand.get(0).value == hand.get(1).value // k, k, q, j, a
-                || hand.get(1).value == hand.get(2).value // k, q, q, j, a
-                || hand.get(2).value == hand.get(3).value // . k, q, j, j, a
-                || hand.get(3).value == hand.get(4).value) { // k, q, j, a, a
+        if (hand.get(0).value == hand.get(1).value) { // k, k, q, j, a
+            hand.get(0).scoring = true;
+            hand.get(1).scoring = true;
+            return true;
+        } else if (hand.get(1).value == hand.get(2).value) { // k, q, q, j, a
+            hand.get(1).scoring = true;
+            hand.get(2).scoring = true;
+            return true;
+        } else if (hand.get(2).value == hand.get(3).value) { // k, q, j, j, a
+            hand.get(2).scoring = true;
+            hand.get(3).scoring = true;
+            return true;
+        } else if (hand.get(3).value == hand.get(4).value) { // k, q, j, a, a
+            hand.get(3).scoring = true;
+            hand.get(4).scoring = true;
             return true;
         }
         return false;
-    }
-
-    // if it isn't anything else, then the hand is a high card
-    public static boolean high_card(ArrayList<Card> hand) {
-        return true;
     }
 
     public static ArrayList<Card> cardBuilder(ArrayList<Card> shuffler) {
@@ -317,7 +421,7 @@ public class App {
 
                 // note that kings are high in this format. Aces are low.
                 // Card values are one digit higher than their position in the array.
-                card.value = j;
+                card.value = j + 1;
 
                 shuffler.add(card);
             }
@@ -352,8 +456,8 @@ public class App {
 
     public static void GregWork() {
         // System.out.println("Greg's work goes here");
-        displayHand(new ArrayList<Card>());
-        mainMenu();
+        // displayHand(new ArrayList<Card>());
+        // mainMenu();
     }
 
     public static void mainMenu() {
@@ -385,7 +489,11 @@ public class App {
                         throw new RuntimeException("Unable to refresh Lanterna screen", e);
                     }
                 }
-                displayHand(new ArrayList<Card>());
+
+                // displayHand(new ArrayList<Card>());
+                var deck = PatrickWork();
+                KrisWork(deck);
+
             }));
             menubar.add(menuGame);
 
@@ -427,18 +535,19 @@ public class App {
         String cardTop = "┌─────┐ ";
         String cardMiddle = "│     │ ";
         String cardBottom = "└─────┘ ";
-
-        // Display five randoms for now ################
-        hand.clear();
-        ArrayList<Card> tempshuffler = new ArrayList<>();
-        tempshuffler = cardBuilder(tempshuffler);
-        Stack<Card> tempdeck = new Stack<Card>();
-        tempdeck = deckbuilder(tempshuffler, tempdeck);
-        for (int i = 0; i < 5; i++) {
-            Card card = tempdeck.pop();
-            hand.add(card);
-        }
-        // #############################################
+        /*
+         * // Display five randoms for now ################
+         * hand.clear();
+         * ArrayList<Card> tempshuffler = new ArrayList<>();
+         * tempshuffler = cardBuilder(tempshuffler);
+         * Stack<Card> tempdeck = new Stack<Card>();
+         * tempdeck = deckbuilder(tempshuffler, tempdeck);
+         * for (int i = 0; i < 5; i++) {
+         * Card card = tempdeck.pop();
+         * hand.add(card);
+         * }
+         * // #############################################
+         */
 
         StringBuilder handText = new StringBuilder();
         for (int i = 0; i < hand.size(); i++) {
@@ -479,10 +588,10 @@ public class App {
     }
 
     public static void main(String[] args) throws IOException {
+        GregWork();
         // VadymWork();
         var deck = PatrickWork();
         KrisWork(deck);
-        GregWork();
 
     }
 }

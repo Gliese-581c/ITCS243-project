@@ -252,4 +252,5 @@ class AppTest {
         hand.add(card);
         assertEquals("\nHigh Card\n", App.define_hands(hand));
     }
+
 }
