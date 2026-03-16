@@ -215,26 +215,26 @@ public class App {
 
         // string returns are better than integers for readability
         if (royal_flush(hand)) {
-            return "Royal Flush";
+            return "\nRoyal Flush\n";
         } else if (straight_flush(hand)) {
-            return "Straight Flush";
+            return "\nStraight Flush\n";
         } else if (four_of_a_kind(hand)) {
-            return "Four of a Kind";
+            return "\nFour of a Kind\n";
         } else if (full_house(hand)) {
-            return "Full House";
+            return "\nFull House\n";
         } else if (flush(hand)) {
-            return "Flush";
+            return "\nFlush\n";
         } else if (straight(hand)) {
-            return "Straight";
+            return "\nStraight\n";
         } else if (three_of_a_kind(hand)) {
-            return "Three of a Kind";
+            return "\nThree of a Kind\n";
         } else if (two_pair(hand)) {
-            return "Two Pair";
+            return "\nTwo Pair\n";
         } else if (one_pair(hand)) {
-            return "One Pair";
+            return "\nOne Pair\n";
         } else { // if it isn't anything else, then the hand is a high card
             hand.get(0).scoring = true;
-            return "High Card";
+            return "\nHigh Card\n";
         }
     }
     
@@ -468,7 +468,7 @@ public class App {
     public static void GregWork() {
         // System.out.println("Greg's work goes here");
         // displayHand(new ArrayList<Card>());
-        // mainMenu();
+        mainMenu();
     }
 
     public static void mainMenu() {
@@ -516,9 +516,8 @@ public class App {
                     }
                 }
 
-                // displayHand(new ArrayList<Card>());
-                var deck = PatrickWork();
-                KrisWork(deck);
+                dealAndDisplayHands();
+                showCardActionButtons();
 
             }));
             menubar.add(menuGame);
@@ -629,26 +628,24 @@ public class App {
     }
 
     private static void displayHands(ArrayList<Card> playerHand, ArrayList<Card> houseHand) {
+        ArrayList<Card> visiblePlayerHand = new ArrayList<>(playerHand.subList(0, Math.min(5, playerHand.size())));
+        ArrayList<Card> visibleHouseHand = new ArrayList<>(houseHand.subList(0, Math.min(5, houseHand.size())));
+
         if (handDisplayLabel != null) {
-            handDisplayLabel.setText(handToText(playerHand));
+            handDisplayLabel.setText(handToText(visiblePlayerHand));
         }
         if (houseDisplayLabel != null) {
             if (revealHouseCards) {
-                houseDisplayLabel.setText(handToText(houseHand));
+                houseDisplayLabel.setText(handToText(visibleHouseHand));
             } else {
-                houseDisplayLabel.setText(hiddenHandToText(houseHand.size()));
+                houseDisplayLabel.setText(hiddenHandToText(visibleHouseHand.size()));
             }
         }
     }
 
     private static void dealAndDisplayHands() {
-        ArrayList<Card> shuffler = new ArrayList<>();
-        shuffler = cardBuilder(shuffler);
-        Stack<Card> deck = new Stack<>();
-        deck = deckbuilder(shuffler, deck);
-
-        player = drawHand(deck);
-        house = drawHand(deck);
+        Stack<Card> deck = PatrickWork();
+        KrisWork(deck);
         revealHouseCards = false;
         displayHands(player, house);
 
@@ -684,20 +681,13 @@ public class App {
 
     private static void resolveRound(String choice) {
         revealHouseCards = true;
-        boolean result = false;
-        if (choice == "High"){
-            result = false;
-        }
-        else if (choice == "Low"){
-            result = true;
-        }
-        String resultText = String.valueOf(result);
+        String resultText = compareHands(player, house);
         displayHands(player, house);
         if (statusLabel != null) {
             statusLabel.setText("You chose: " + choice + ".\n The " + resultText + " had the better hand!" + "\n\nUse Game -> Start Game to deal again.");
-            if (resultText == "Player" && choice == "High") {
+            if ("Player".equals(resultText) && "High".equals(choice)) {
                 statusLabel.setText(statusLabel.getText() + "\n\nYou win!");
-            } else if (resultText == "House" && choice == "Low") {
+            } else if ("House".equals(resultText) && "Low".equals(choice)) {
                 statusLabel.setText(statusLabel.getText() + "\n\nYou win!");
             } else {
                 statusLabel.setText(statusLabel.getText() + "\n\nHouse wins!");
@@ -733,10 +723,10 @@ public class App {
     }
 
     public static void main(String[] args) throws IOException {
-        GregWork();
+        
         // VadymWork();
         var deck = PatrickWork();
         KrisWork(deck);
-
+        GregWork();
     }
 }
